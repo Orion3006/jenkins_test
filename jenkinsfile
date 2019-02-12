@@ -1,0 +1,45 @@
+pipeline {
+         agent any
+         stages {
+                 stage('One') {
+                 steps {
+                     echo 'Hi, Soy Fran Perez de PERU'
+                 }
+                 }
+                 stage('Two') {
+                 steps {
+                    input('Cual es tu procedencia?')
+                 }
+                 }
+                 stage('Three') {
+                 when {
+                       not {
+                            branch "master"
+                       }
+                 }
+                 steps {
+                       echo "Hola"
+                 }
+                 }
+                 stage('Four') {
+                 parallel { 
+                            stage('Unit Test') {
+                           steps {
+                                echo "Running la unidad de Test..."
+                           }
+                           }
+                            stage('Integration test') {
+                              agent {
+                                    docker {
+                                            reuseNode true
+                                            image 'linuxmint'
+                                           }
+                                    }
+                              steps {
+                                echo "Running el test de integracion..."
+                              }
+                           }
+                           }
+                           }
+              }
+}
